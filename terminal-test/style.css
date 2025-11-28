@@ -1,0 +1,226 @@
+/* Подключаем чистые моно-шрифты (без "маркерного" вида) */
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@300;400;600;700&display=swap');
+
+
+html, body {   /* это  CSS */
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+  background: transparent;
+  overflow: hidden;
+}
+
+/* Контейнер — вся рамка */
+#communicator {
+  position: fixed;
+  width: min(140vw, calc(140vh * 16/9));
+  aspect-ratio: 16 / 9;
+  background: url("https://raw.githubusercontent.com/TraMaland2028/stream-assets/refs/heads/main/ChatGPT%20Image%207%20%D0%BE%D0%BA%D1%82.%202025%20%D0%B3.%2C%2018_43_51%20(1)%20(1)%20(1).png?v=5")
+              center / contain no-repeat;
+  background-color: transparent;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Экран внутри рамки (где текст доната) */
+#screen {
+  position: absolute;
+  top: 21.5%;
+  left: 14.5%;
+  width: 68%;
+  height: 57.5%;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 8px;
+  outline: 2px solid #00ffa0;
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  position: relative;
+  pointer-events: auto;
+  transition:
+    outline-color 0.35s ease-out,
+    box-shadow    0.35s ease-out,
+    filter        0.35s ease-out;
+}
+
+/* >>> ЭФФЕКТ ВСПЫШКИ НА РАМКЕ <<< */
+#screen.flash {
+  outline-color: #6effc8;
+  box-shadow:
+    inset 0 0 22px rgba(0,255,160,0.55),
+    0 0 18px rgba(0,255,120,0.25),
+    inset 0 0 12px rgba(0, 0, 0, 0.35);
+  filter: brightness(1.06);
+}
+
+/* Оверлей для вспышки */
+#flash-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.35s ease-out;
+  will-change: opacity;
+  background: radial-gradient(circle at 50% 50%,
+              rgba(0,255,160,0.70) 0%,
+              rgba(0,255,120,0.45) 35%,
+              rgba(0,255,106,0.28) 55%,
+              rgba(0,0,0,0) 75%);
+  mix-blend-mode: screen;
+}
+#flash-overlay.active { opacity: 1; }
+
+@supports not (mix-blend-mode: screen) {
+  #flash-overlay {
+    background: radial-gradient(circle at 50% 50%,
+                rgba(0,255,140,0.50), transparent 70%);
+    box-shadow:
+      inset 0 0 40px rgba(0,255,160,0.50),
+      0 0 30px rgba(0,255,120,0.20);
+  }
+}
+
+/* Контейнер для текстовых строк */
+#log {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  color: #00ff6a;
+  font-family: "Share Tech Mono","IBM Plex Mono",Consolas,"Courier New",monospace;
+  font-size: 60px;
+  font-weight: 550;              
+  letter-spacing: 0.01em;        /* лёгкий интервал */
+  line-height: 1.08;             /* компактно, но без слипания */
+  text-shadow: none;
+  padding: 10px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  z-index: 1;
+  background: transparent;
+
+  /* сглаживание — убирает “маркерный” эффект, особенно на Windows */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Текстовая анимация */
+.line {
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 4px 0;
+}
+
+/* ПУСТЫЕ строки — видимые, с высотой в одну строку */
+.line:empty::before { content: "\00A0"; }
+
+/* Мигающий курсор */
+.cursor {
+  display: inline-block;
+  width: 10px;
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* Скроллбар */
+#log::-webkit-scrollbar { width: 6px; }
+#log::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+#log::-webkit-scrollbar-thumb { background: rgba(0,255,106,0.5); border-radius: 3px; }
+
+/* ==== Спрятать стандартный слой темы Alert Box ==== */
+#alert-box,
+#alert-box > div { background: transparent !important; }
+
+#alert-box .alert,
+#alert-box .alert * { display: none !important; }
+
+/* Явно показываем наш ПДА */
+#communicator {
+  display: block !important;
+  position: fixed;
+  z-index: 9999;
+}
+
+/* Заголовок доната — немного плотнее, чем основной текст */
+.header-line { font-weight: 600; }
+
+/* ОТКЛЮЧАЕМ псевдо-конверт (конверт добавляет JS) */
+.header-line::before { content: none !important; display: none !important; }
+
+/* Красный конверт из JS: +25% и аккуратное выравнивание */
+.env{
+  color:#ff4d4d;
+  font-size:1.5em;
+  line-height:0;
+  display:inline-block;
+  vertical-align:-0.08em;
+}
+
+/* (необязательно) очень деликатное свечение текста — атмосфера CRT */
+#log .line { text-shadow: 0 0 0.04em rgba(0,255,106,0.22); }
+
+/* =========================================================
+   PRESET A — «Строже и тоньше» (IBM Plex Mono 300)
+   Включить: <body class="thin">
+   Ничего не меняет по умолчанию.
+   ========================================================= */
+body.thin #log{
+  font-family: "IBM Plex Mono","Share Tech Mono",Consolas,"Courier New",monospace;
+  font-weight: 300;        /* тоньше визуально */
+  letter-spacing: 0.005em; /* чуть плотнее */
+  line-height: 1.06;       /* компактнее строки */
+  text-shadow: none;       /* убираем свечение для абсолютной «сухости» */
+}
+body.thin .header-line{
+  font-weight: 500;        /* аккуратный акцент без «жира» */
+  letter-spacing: 0.005em;
+}
+body.thin .env{
+  margin-right: 0.35em;    /* опционально: чуть больше воздуха после ✉ */
+  vertical-align: -0.06em;
+}
+
+/* =========================================================
+   PRESET B — «Чуть ретро-CRT» (деликатное свечение + скан-линии)
+   Включить: <body class="crt">
+   Совершенно мягкий эффект, не “маркер”.
+   ========================================================= */
+body.crt #log .line{
+  text-shadow:
+    0 0 0.06em rgba(0,255,120,0.18),   /* лёгкое свечение */
+    0 0 0.18em rgba(0,255,120,0.08);
+}
+
+/* скан-линии поверх экрана (еле заметные) */
+body.crt #screen::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: 0.14; /* общая выраженность эффекта */
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.00) 0px,
+      rgba(0,0,0,0.00) 2px,
+      rgba(0,0,0,0.06) 3px,   /* тонкая тёмная полоса */
+      rgba(0,0,0,0.06) 4px
+    );
+  mix-blend-mode: soft-light; /* мягкое наложение */
+}
+
+/* едва-заметное «дыхание» яркости, чтобы экран не был мёртвым */
+@keyframes crtBreath {
+  0%   { filter: brightness(1.00); }
+  50%  { filter: brightness(1.03); }
+  100% { filter: brightness(1.00); }
+}
+body.crt #screen{
+  animation: crtBreath 6s ease-in-out infinite;
+}

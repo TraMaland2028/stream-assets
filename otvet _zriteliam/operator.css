@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;600&display=swap');
+
+/* палитра */
+:root{
+  --op-border: #FFA733;               /* контур */
+  --op-fill:   rgba(255,167,51,0.08); /* лёгкая заливка */
+}
+
+html, body {
+  margin: 0; padding: 0;
+  height: 100vh; width: 100vw;
+  background: transparent; overflow: hidden;
+}
+
+#operator-root{
+  position: fixed; inset: 0;
+  pointer-events: none;               /* не перехватываем мышь */
+}
+
+/* панель снизу-слева */
+#op-panel{
+  position: absolute; inset: 0;
+  display: flex;
+  align-items: flex-end;              /* снизу */
+  justify-content: flex-start;        /* слева по умолчанию */
+  padding: 2.5% 3%;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .30s ease, transform .30s ease; /* синхронизировано с JS (300ms) */
+  z-index: 20;
+}
+/* показать */
+#op-panel.show{
+  opacity: 1;
+  transform: translateY(0);
+}
+/* плавное скрытие по команде из JS */
+#op-panel.fadeout{
+  opacity: 0;
+  transform: translateY(8px);
+}
+/* режим справа (когда JS добавляет класс .right) */
+#op-panel.right{
+  justify-content: flex-end;
+}
+
+/* пузырь БЕЗ хвостов */
+.op-box{
+  max-width: min(92%, 1300px);
+  background: var(--op-fill);
+  border: 3px solid var(--op-border);
+  border-radius: 18px;
+  padding: .85em 1.15em;              /* внутренние отступы */
+  position: relative;
+  pointer-events: none;
+  background-clip: padding-box;       /* чёткий край */
+  overflow: hidden;
+}
+
+/* текст: тонкий IBM Plex Mono, цвет = цвет рамки */
+.op-log{
+  color: var(--op-border);
+  font-family: "IBM Plex Mono", Consolas, "Courier New", monospace;
+  font-weight: 300;
+  font-size: 56px;                    /* подгони при необходимости */
+  line-height: 1.08;
+  letter-spacing: 0.01em;
+  text-shadow: none;
+  white-space: pre-wrap; word-break: break-word;
+}
+
+/* курсор печати */
+.op-log .cursor{
+  display:inline-block; width:10px;
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes blink{50%{opacity:0;}}
+
+/* портретный режим — адаптивный кегль */
+@media (orientation: portrait){
+  #op-panel{ padding: 3.5% 3.5%; }
+  .op-log{ font-size: clamp(36px, 4.6vw, 68px); }
+}
